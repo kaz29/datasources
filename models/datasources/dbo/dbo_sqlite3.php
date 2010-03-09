@@ -18,6 +18,8 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::import('Datasource','DboSource');
+
 /**
  * DBO implementation for the SQLite3 DBMS.
  *
@@ -305,7 +307,7 @@ class DboSqlite3 extends DboSource {
 		if ($parent != null) {
 			return $parent;
 		}
-		if ($data === null) {
+		if ($data === null || (is_array($data) && empty($data))) {
 			return 'NULL';
 		}
 		if ($data === '') {
@@ -515,8 +517,8 @@ class DboSqlite3 extends DboSource {
 		//PDO::getColumnMeta is experimental and does not work with sqlite3,
 		//	so try to figure it out based on the querystring
 		$querystring = $results->queryString;
-		if (strpos($querystring, 'SELECT') === 0) {
-			$last = strpos($querystring, 'FROM');
+		if (stripos($querystring, 'SELECT') === 0) {
+			$last = stripos($querystring, 'FROM');
 			if ($last !== false) {
 				$selectpart = substr($querystring, 7, $last - 8);
 				$selects = explode(',', $selectpart);
@@ -536,7 +538,7 @@ class DboSqlite3 extends DboSource {
 			}
 
 			if (strpos($selects[$j], 'DISTINCT') === 0) {
-				$columnName = str_replace('DISTINCT', '', $columnName);
+				$columnName = str_ireplace('DISTINCT', '', $columnName);
 			}
 
 			if (strpos($columnName, '.')) {

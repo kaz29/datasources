@@ -18,6 +18,8 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::import('Datasource','DboSource');
+
 /**
  * Short description for class.
  *
@@ -207,7 +209,7 @@ class DboSybase extends DboSource {
 			return $parent;
 		}
 
-		if ($data === null) {
+		if ($data === null || (is_array($data) && empty($data))) {
 			return 'NULL';
 		}
 
